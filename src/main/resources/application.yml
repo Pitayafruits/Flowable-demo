@@ -4,6 +4,12 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/flowable-demo?characterEncoding=UTF-8&serverTimezone=UTC
     username: root
     password: root
+
 server:
   port: 8000
+
+# flowable 配置
+flowable:
+  # 关闭异步，不关闭历史数据的插入就是异步的，会在同一个事物里面，无法回滚
+  async-executor-activate: false
 
