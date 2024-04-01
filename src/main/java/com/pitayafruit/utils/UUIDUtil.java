@@ -1,4 +1,4 @@
-package com.utils;
+package com.pitayafruit.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class UUIDUtil {
      *
      * @return UUID值[String]
      */
-    public String getUUID() {
+    public static String getUUID() {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
@@ -23,7 +23,7 @@ public class UUIDUtil {
      * @param number 所需个数
      * @return UUID集合
      */
-    public List<String> getUUID(Integer number) {
+    public static  List<String> getUUID(Integer number) {
         List<String> list = new ArrayList<>();
         while (0 <= (number--)) {
             list.add(getUUID());

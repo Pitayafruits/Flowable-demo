@@ -1,15 +1,15 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/flowable-demo?characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://127.0.0.1:3306/flowable-demo?characterEncoding=UTF-8&serverTimezone=UTC&nullCatalogMeansCurrent=true
     username: root
     password: root
+
+flowable:
+  async-executor-activate: true # 关闭定时任务job
+  database-schema-update: true # flowable自动更新表结构
 
 server:
   port: 8000
 
-# flowable 配置
-flowable:
-  # 关闭异步，不关闭历史数据的插入就是异步的，会在同一个事物里面，无法回滚
-  async-executor-activate: false
 
