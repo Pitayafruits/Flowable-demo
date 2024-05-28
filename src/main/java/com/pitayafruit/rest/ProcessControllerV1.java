@@ -7,6 +7,7 @@ import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.repository.Deployment;
+import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.springframework.http.HttpStatus;
@@ -45,8 +46,11 @@ public class ProcessControllerV1 {
                 .name("绩效流程")
                 //4.部署
                 .deploy();
-        //5.返回部署的流程id
-        return new ResponseEntity<>(new BaseResponse<>(deployment.getId()), HttpStatus.OK);
+        //2.通过流程部署id查询流程定义id
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+                .deploymentId(deployment.getId()).singleResult();
+        //3.返回流程定义id
+        return new ResponseEntity<>(new BaseResponse<>(processDefinition.getId()), HttpStatus.OK);
     }
 
     /**
@@ -54,12 +58,12 @@ public class ProcessControllerV1 {
      *
      * @return 流程key
      */
-    @PostMapping("/start")
-    public ResponseEntity<Object> startProcessDef() {
-        //1.声明流程id
-        String processId = "performance-001:1:a9d432fd-ec57-11ee-980b-c85ea9014af0";
-        //2.启动流程
+    @PostMapping("/start/{processId}")
+    public ResponseEntity<Object> startProcessDef(@PathVariable String processId) {
+        //1.启动流程
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(processId);
+        //2.维护该流程的分数变量
+        runtimeService.setVariable(processInstance.getId(), "score", 0);
         //3.返回流程实例对象id
         return new ResponseEntity<>(new BaseResponse<>(processInstance.getId()), HttpStatus.OK);
     }
@@ -69,7 +73,7 @@ public class ProcessControllerV1 {
      *
      * @return 流程key
      */
-    @PostMapping("/complete/{agentUser}")
+    @PostMapping("/complete/agentUser/{agentUser}")
     public ResponseEntity<Object> completeTask(@PathVariable String agentUser) {
         //1.查询指定用户的待办任务
         //String agentTaskId = findUserAgentTask(agentUser);
