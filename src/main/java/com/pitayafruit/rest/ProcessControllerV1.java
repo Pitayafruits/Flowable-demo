@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 /**
  * 流程Controller.
  */
@@ -73,13 +75,17 @@ public class ProcessControllerV1 {
      *
      * @return 流程key
      */
-    @PostMapping("/complete/agentUser/{agentUser}")
-    public ResponseEntity<Object> completeTask(@PathVariable String agentUser) {
+    @PostMapping("/complete/agentUser/{agentUser}/score/{score}/processInstanceId/{processInstanceId}")
+    public ResponseEntity<Object> completeTask(@PathVariable String agentUser,
+                                               @PathVariable String score,
+                                               @PathVariable String processInstanceId) {
         //1.查询指定用户的待办任务
-        //String agentTaskId = findUserAgentTask(agentUser);
-        //2.完成指定任务的审批
-        taskService.complete("d30f9ffd-eeb2-11ee-9654-c85ea9014af0");
-        //3.返回响应
+        String agentTaskId = findUserAgentTask(agentUser);
+        //2.更新绩效流程变量
+       runtimeService.setVariable(processInstanceId, "score", score);
+        //3.完成指定任务的审批
+        taskService.complete(agentTaskId);
+        //4.返回响应
         return new ResponseEntity<>(new BaseResponse<>(null), HttpStatus.OK);
     }
 
